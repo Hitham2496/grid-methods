@@ -7,6 +7,10 @@ The scripts are based on tools originally written by Jeppe Andersen and Tuomas H
 
 The current scripts include methods for running HEJ+Pythia (under development) and [HEJ](https://hej.hepforge.org/) and the format is less than ideal since compatibility with python 2 is required for use on the Grid (for instance I would normally use python 3 [f-strings](https://docs.python.org/3/tutorial/inputoutput.html) rather than %s to include variable values in strings).
 
+The original scripts made use of `os.system()` rather than `subprocess.Popen()` which uses non-blocking commands and so would have been preferrable.
+
+To retain functionality in porting the prior scripts which were used to produce data for publications the implementation with `os.system()` was kept here.
+
 Additionally, producing a python package for this submission system is made difficult by the out-of-date build tools on the grid meaning installing packages to one's local environment is significantly more difficult.
 
 ## Format
