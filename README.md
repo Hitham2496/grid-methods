@@ -14,6 +14,8 @@ To retain functionality in porting the prior scripts which were used to produce 
 Additionally, producing a python package for this submission system is made difficult by the out-of-date build tools on the grid meaning installing packages to one's local environment is significantly more difficult.
 
 ## Format
+Example job script templates may be found in `src/JobTemplate`, we here guide the user through use of the HEJ+Pythia scripts in `src/HejPythiaJob`.
+
 The scripts are split into a job and manager class (`hejpythia_job.py`) and a run script (`run_hejpythia.py`) which will run multiple jobs (up to a maximum of four) per submission node.
 
 Output from each job is the [yoda](https://yoda.hepforge.org/) analysis file for each run (and scale variations) as well as the HEJ, Sherpa and HEJ+Pythia runcards used for the run (for debugging purposes).
@@ -64,3 +66,9 @@ It is recommended to split runs up by jet multiplicity (which HEJ requires anywa
 While this is not the most efficient way, it does allow one to be certain of which parameters were used in the running while debugging (by simply checking the corresponding runcard).
 
 No functionality is provided for combining merged yoda analysis output between jet multiplicities/ different runs since this is often analysis-specific, the user should construct their own methods or use standard tools (e.g. `yodamerge`, `yodastack`, ...) for the analysis they require.
+
+## Custom Jobs
+
+It is recommended to write methods based on the template files in `src/JobTemplate` for your executables.
+
+Feel free to open a pull request for your own jobs :)
