@@ -40,7 +40,7 @@ class HejPythiaJob():
         """
         print("Setting environment for HEJ+Pythia run")
         os.system("date")
-        cmd = "source /mt/home/%s/bashrc" % (self.user_name)
+        cmd = "source /mt/home/%s/.bashrc" % (self.user_name)
         os.system(cmd)
         os.system("source /cvmfs/pheno.egi.eu/HEJ/HEJ_env.sh")
         os.environ["MYPROXY_SERVER"] = "myproxy.gridpp.rl.ac.uk"
