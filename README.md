@@ -16,11 +16,11 @@ Additionally, producing a python package for this submission system is made diff
 ## Format
 Example job script templates may be found in `src/JobTemplate`, we here guide the user through use of the HEJ+Pythia scripts in `src/HejPythiaJob`.
 
-The scripts are split into a job and manager class (`hejpythia_job.py`) and a run script (`run_hejpythia.py`) which will run multiple jobs (up to a maximum of four) per submission node.
+The scripts are split into a manager (`hejpythia_manager.py`) and a run script (`run_hejpythia.py`) which will run multiple jobs (up to a maximum of four) per submission node.
 
 Output from each job is the [yoda](https://yoda.hepforge.org/) analysis file for each run (and scale variations) as well as the HEJ, Sherpa and HEJ+Pythia runcards used for the run (for debugging purposes).
 
-The `HejPythiaMerger` class in `hejpythia_job.py` is used to copy and merge the output yoda files with the option to prune for significant outliers.
+The `HejPythiaMerger` class in `run_hejpythia.py` is used to copy and merge the output yoda files with the option to prune for significant outliers.
 
 If pruning is enabled ensure your pruning tools are compiled and may be found in `$PATH`.
 
