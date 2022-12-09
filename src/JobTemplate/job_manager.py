@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from .job import Job, JobMerger
+from run_job import Job, JobMerger
 import argparse
 
 
