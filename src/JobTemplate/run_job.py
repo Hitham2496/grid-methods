@@ -32,8 +32,8 @@ def main():
     grid_job = Job(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
     grid_job.set_env()
 
-    if args.threads[0] > 4:
-        raise(ValueError("Maximum number of threads is 4 per node."))
+    if args.processes[0] > 4:
+        raise(ValueError("Maximum number of processes is 4 per node."))
 
     t1 = time.time()
     jobs = []
