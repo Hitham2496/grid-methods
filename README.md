@@ -43,6 +43,12 @@ Then one needs only run the script with:
 ```
 python hejpythia_manager.py -r
 ```
+One may produce a dry run by only writing the xrsl files with:
+```
+python hejpythia_manager.py -w
+```
+though it is recommended to only write a small number of files and inspect them for debugging purposes.
+
 To interact with the job database (written to `$PWD/multijobs.dat`) one may use the standard [arc](https://www.ippp.dur.ac.uk/~andersen/GridTutorial/arc.html) tools, a wrapper around `arcstat` is provided with the manager script:
 ```
 python hejpythia_manager.py -s
