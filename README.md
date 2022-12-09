@@ -32,7 +32,7 @@ The modifications are all in the `args` dictionary parameter in `main()`, no oth
  - `n_min` : int starting job number
  - `n_max` : int final job number
  - `events` : int number of events per run
- - `threads` : int number of runs per core < 4
+ - `processess` : int number of runs per submission < 4
  - `user_name` : user name on gridui and dpm storage
  - `base_dir` : base directory containing run configuration files
  - `rivet_dir` : directory containing rivet analyses
