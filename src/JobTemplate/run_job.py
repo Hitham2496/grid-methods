@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 """
-Runs a multithreaded HEJ+Pythia job on a single grid node.
+Runs a multitprocessed temporary job on a single grid node.
 """
 import argparse
 import os
