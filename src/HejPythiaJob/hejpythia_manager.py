@@ -25,37 +25,42 @@ def make_job_file(user_name, job_number, events, processes, base_dir, rivet_dir,
     os.system(cmd)
 
 
-def run(args):
+def run(args, write_only = False):
     """
-    Submits n_max - n_min + 1 multiprocessed xrsl job scripts to the grid.
+    Submits n_max - n_min + 1 multiprocessed xrsl job scripts to the grid
+    unless write_only is set --- then only xrsl input files are written.
     """
     for idx in range(args["n_min"], args["n_max"] + 1):
         make_job_file(args["user_name"], idx, args["events"], args["processes"],
                       args["base_dir"], args["rivet_dir"],
                       args["output_dir"], args["job_name"])
 
-        if (idx%2) == 0:
-            cmd = "arcsub --direct -c ce1.dur.scotgrid.ac.uk -j ./multijobs.dat job%s.jdl &" % (idx)
-            os.system(cmd)
+        if not write_only:
+            if (idx%2) == 0:
+                cmd = "arcsub --direct -c ce1.dur.scotgrid.ac.uk -j ./multijobs.dat job%s.jdl &" % (idx)
+                os.system(cmd)
 
-        # Sleep after every other job submission.
-        else:
-            cmd = "arcsub --direct -c ce1.dur.scotgrid.ac.uk -j ./multijobs.dat job%s.jdl &" % (idx)
-            os.system(cmd)
-            cmd = "sleep 0.2"
-            os.system(cmd)
+            # Sleep after every other job submission.
+            else:
+                cmd = "arcsub --direct -c ce1.dur.scotgrid.ac.uk -j ./multijobs.dat job%s.jdl &" % (idx)
+                os.system(cmd)
+                cmd = "sleep 0.2"
+                os.system(cmd)
 
     cmd = "sleep 0.5"
     os.system(cmd)
-    cmd = "rm *jdl"
-    os.system(cmd)
+
+    if not write_only:
+      cmd = "rm *jdl"
+      os.system(cmd)
 
 
 def main(args):
     """
     Main method for manager functionality.
     """
-    parser = argparse.ArgumentParser(description = "Usage: python hejpythia_manager.py -r [--run] -s [-status] -f [--finalise] -m [--merge]")
+    parser = argparse.ArgumentParser(description = "Usage: python hejpythia_manager.py [-w] [--write] -r [--run] -s [-status] -f [--finalise] -m [--merge]")
+    parser.add_argument('--write', '-w', action = "store_true")
     parser.add_argument('--run', '-r', action = "store_true")
     parser.add_argument('--status', '-s', action = "store_true")
     parser.add_argument('--finalise', '-f', action = "store_true")
@@ -63,7 +68,7 @@ def main(args):
     manager_args = parser.parse_args()
 
     if manager_args.run:
-       run(args)
+       run(args manager_args.write)
        return
 
     if manager_args.status:
