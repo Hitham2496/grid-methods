@@ -51,7 +51,6 @@ def run(args, write_only = False):
     os.system(cmd)
 
     if not write_only:
-        print("here")
         cmd = "rm *jdl"
         os.system(cmd)
 
