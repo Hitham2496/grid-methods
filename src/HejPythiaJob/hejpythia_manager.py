@@ -82,7 +82,7 @@ def main(args):
          n_finished = os.popen("arcstat -j multijobs.dat | grep -i 'Finished' | wc -l").read()
          n_finishing = os.popen("arcstat -j multijobs.dat | grep -i 'Finishing' | wc -l").read()
          n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
-         n_waiting = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
+         n_queueing = os.popen("arcstat -j multijobs.dat | grep -i 'Queueing' | wc -l").read()
          n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
 
          with open("logfile.txt", "a") as logfile:
@@ -98,7 +98,7 @@ def main(args):
              logfile.write("Number of finished jobs: %s\n" % str(n_finished))
              logfile.write("Number of finishing jobs: %s\n" % str(n_finishing))
              logfile.write("Number of failed jobs: %s\n" % str(n_failed))
-             logfile.write("Number of waiting jobs: %s\n" % str(n_waiting))
+             logfile.write("Number of queueing jobs: %s\n" % str(n_queueing))
              logfile.write("Number of missing jobs: %s\n" % str(n_missing)) 
 
          return
@@ -137,15 +137,15 @@ if __name__ == """__main__""":
     """
 
     args = {
-           "n_min"      : 100,
+           "n_min"      : 1,
            "n_max"      : 100,
-           "events"     : 50,
+           "events"     : 100000,
            "processes"  : 4,
            "user_name"  : "hhassan",
            "job_name"   : "/mt/home/hhassan/HEP-Tools/grid-methods/src/HejPythiaJob/run_hejpythia.py",
            "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
-           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/WJETS/Wm_3j",
+           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/azimuthal-20GeV-2jet-single-run",
     }
 
     main(args)
