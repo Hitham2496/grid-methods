@@ -51,30 +51,58 @@ def run(args, write_only = False):
     os.system(cmd)
 
     if not write_only:
-      cmd = "rm *jdl"
-      os.system(cmd)
+        print("here")
+        cmd = "rm *jdl"
+        os.system(cmd)
 
 
 def main(args):
     """
     Main method for manager functionality.
     """
-    parser = argparse.ArgumentParser(description = "Usage: python hejpythia_manager.py [-w] [--write] -r [--run] -s [-status] -f [--finalise] -m [--merge]")
+    parser = argparse.ArgumentParser(description = "Usage: python hejpythia_manager.py [-w] [--write] -r [--run] -s [-status] -f [--finalise] -m [--merge] -c [--clean] -k [--kill]")
     parser.add_argument('--write', '-w', action = "store_true")
     parser.add_argument('--run', '-r', action = "store_true")
     parser.add_argument('--status', '-s', action = "store_true")
     parser.add_argument('--finalise', '-f', action = "store_true")
     parser.add_argument('--merge', '-m', action = "store_true")
+    parser.add_argument('--clean', '-c', action = "store_true")
+    parser.add_argument('--kill', '-k', action = "store_true")
     manager_args = parser.parse_args()
 
     if manager_args.run:
-       run(args manager_args.write)
-       return
+         run(args, manager_args.write)
+         return
 
     if manager_args.status:
-       print("Writing job statuses to logfile.txt")
-       os.system("arcstat -j multijobs.dat > logfile.txt")
-       return
+         print("Writing job statuses to logfile.txt")
+         os.system("rm logfile.txt")
+         job_statuses = os.popen("arcstat -j multijobs.dat").read()
+
+         n_running = os.popen("arcstat -j multijobs.dat | grep -i 'Running' | wc -l").read()
+         n_finished = os.popen("arcstat -j multijobs.dat | grep -i 'Finished' | wc -l").read()
+         n_finishing = os.popen("arcstat -j multijobs.dat | grep -i 'Finishing' | wc -l").read()
+         n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
+         n_waiting = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
+         n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
+
+         with open("logfile.txt", "a") as logfile:
+             logfile.write("=" * 80 + "\n")
+             logfile.write("-" * 32 + " JOB INFORMATION " + "-" * 31 + "\n")
+             logfile.write("=" * 80 + "\n")
+             logfile.write(job_statuses)
+             logfile.write("\n" + "=" * 80 + "\n")
+             logfile.write("-" * 30 + " SUMMARY INFORMATION " + "-" * 29 + "\n")
+             logfile.write("=" * 80 + "\n")
+             logfile.write("Total jobs: %s\n" % str(args["n_max"] - args["n_min"] + 1))
+             logfile.write("Number of running jobs: %s\n" % str(n_running))
+             logfile.write("Number of finished jobs: %s\n" % str(n_finished))
+             logfile.write("Number of finishing jobs: %s\n" % str(n_finishing))
+             logfile.write("Number of failed jobs: %s\n" % str(n_failed))
+             logfile.write("Number of waiting jobs: %s\n" % str(n_waiting))
+             logfile.write("Number of missing jobs: %s\n" % str(n_missing)) 
+
+         return
 
     merger = HejPythiaMerger(args["user_name"], args["output_dir"])
     if manager_args.finalise:
@@ -83,6 +111,12 @@ def main(args):
 
     if manager_args.merge:
         merger.merge_output()
+
+    if manager_args.clean:
+        os.system("arcclean -j multijobs.dat")
+
+    if manager_args.kill:
+        os.system("arckill -j multijobs.dat")
     
 
 if __name__ == """__main__""":
@@ -106,7 +140,7 @@ if __name__ == """__main__""":
            "processes"  : 4,
            "user_name"  : "hhassan",
            "job_name"   : "run_hejpythia.py",
-           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-40GeV-60GeV-Optimised-R0pt4/2j_HT2_7TeV/",
+           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
            "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/WJETS/Wm_3j",
     }
