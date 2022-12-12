@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from hejpythia_job import HejPythiaJob, HejPythiaMerger
+from run_hejpythia import HejPythiaJob, HejPythiaMerger
 import argparse
 
 

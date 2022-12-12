@@ -259,6 +259,7 @@ class HejPythiaMerger():
 
         print("Organising output into categories of runs")
         files = os.listdir(self.scratch_dir)
+        print(files)
         with multiprocessing.Pool() as pool:
             # Use multiprocessing to organise output in parallel
             pool.map(self.organise_single, files)
