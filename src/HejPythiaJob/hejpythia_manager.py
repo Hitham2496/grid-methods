@@ -104,19 +104,23 @@ def main(args):
 
          return
 
+    if manager_args.clean:
+        os.system("arcclean -j multijobs.dat")
+        return
+
+    if manager_args.kill:
+        os.system("arckill -j multijobs.dat")
+        return
+
     merger = HejPythiaMerger(args["user_name"], args["output_dir"])
     if manager_args.finalise:
         merger.copy_files()
         os.system("arcclean -j multijobs.dat")
+        return
 
     if manager_args.merge:
         merger.merge_output()
-
-    if manager_args.clean:
-        os.system("arcclean -j multijobs.dat")
-
-    if manager_args.kill:
-        os.system("arckill -j multijobs.dat")
+        return
     
 
 if __name__ == """__main__""":
