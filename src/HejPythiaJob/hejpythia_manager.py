@@ -70,7 +70,7 @@ def main(args):
     parser.add_argument('--kill', '-k', action = "store_true")
     manager_args = parser.parse_args()
 
-    if manager_args.run:
+    if manager_args.run or manager_args.write:
          run(args, manager_args.write)
          return
 
@@ -140,10 +140,10 @@ if __name__ == """__main__""":
     args = {
            "n_min"      : 100,
            "n_max"      : 100,
-           "events"     : 1000,
+           "events"     : 50,
            "processes"  : 4,
            "user_name"  : "hhassan",
-           "job_name"   : "run_hejpythia.py",
+           "job_name"   : "/mt/home/hhassan/HEP-Tools/grid-methods/src/HejPythiaJob/run_hejpythia.py",
            "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
            "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/WJETS/Wm_3j",
