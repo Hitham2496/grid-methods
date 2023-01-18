@@ -298,14 +298,14 @@ class HejPythiaMerger():
         if with_variations:
             cmd = "yodamerge results/lo-output/LO*.MUR2_MUF2_* -o results/merged/LO-MUR2-MUF2.yoda"
             os.system(cmd)
-            cmd = "yodamerge results/lo-output/LO*.MUR1_MUF2_* -o results/merged/LO-MUR1-MUF2.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/lo-output/LO*.MUR2_MUF1_* -o results/merged/LO-MUR2-MUF1.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/lo-output/LO*.MUR0.5_MUF1_* -o results/merged/LO-MUR0.5-MUF1.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/lo-output/LO*.MUR1_MUF0.5_* -o results/merged/LO-MUR1-MUF0.5.yoda"
-            os.system(cmd)
+            # cmd = "yodamerge results/lo-output/LO*.MUR1_MUF2_* -o results/merged/LO-MUR1-MUF2.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/lo-output/LO*.MUR2_MUF1_* -o results/merged/LO-MUR2-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/lo-output/LO*.MUR0.5_MUF1_* -o results/merged/LO-MUR0.5-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/lo-output/LO*.MUR1_MUF0.5_* -o results/merged/LO-MUR1-MUF0.5.yoda"
+            # os.system(cmd)
             cmd = "yodamerge results/lo-output/LO*.MUR0.5_MUF0.5_* -o results/merged/LO-MUR0.5-MUF0.5.yoda"
             os.system(cmd)
         
@@ -322,14 +322,14 @@ class HejPythiaMerger():
         if with_variations:
             cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF2* -o results/merged/HEJ-MUR2-MUF2.yoda"
             os.system(cmd)
-            cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF2* -o results/merged/HEJ-MUR1-MUF2.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF1* -o results/merged/HEJ-MUR2-MUF1.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF1* -o results/merged/HEJ-MUR0.5-MUF1.yoda"
-            os.system(cmd)
-            cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF0.5* -o results/merged/HEJ-MUR1-MUF0.5.yoda"
-            os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF2* -o results/merged/HEJ-MUR1-MUF2.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF1* -o results/merged/HEJ-MUR2-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF1* -o results/merged/HEJ-MUR0.5-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF0.5* -o results/merged/HEJ-MUR1-MUF0.5.yoda"
+            # os.system(cmd)
             cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF0.5* -o results/merged/HEJ-MUR0.5-MUF0.5.yoda"
             os.system(cmd)
         
