@@ -145,7 +145,7 @@ class HejPythiaJob():
         # Run Sherpa
         print("Starting Sherpa run at:")
         os.system("date")
-        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s]" % (str(seed), str(events), str(seed), str(seed))
+        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] USE_GZIP=1" % (str(seed), str(events), str(seed), str(seed))
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
@@ -163,7 +163,7 @@ class HejPythiaJob():
         # Run HEJ
         print("Starting HEJ run at:")
         os.system("date")
-        cmd = "HEJ config_%s.yml SherpaLHE_%s.lhe" % (str(seed), str(seed))
+        cmd = "HEJ config_%s.yml SherpaLHE_%s.lhe.gz" % (str(seed), str(seed))
         os.system(cmd)
         print("HEJ finished running at:")
         os.system("date")
@@ -207,7 +207,7 @@ class HejPythiaJob():
         """
         Removes the remaining files.
         """
-        os.system("rm *gz *yml *dat *yoda *cmnd *tex *lhe Results* -r Process Sherpa HEJ HEJ_pythia lib bin include share Pythia -f")
+        os.system("rm *gz *yml *dat *yoda *cmnd *tex *lhe* Results* -r Process Sherpa HEJ HEJ_pythia lib bin include share Pythia -f")
 
 
     def print_info(self):
