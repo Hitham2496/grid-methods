@@ -55,21 +55,58 @@ def main(args):
     """
     Main method for manager functionality.
     """
-    parser = argparse.ArgumentParser(description = "Usage: python job_manager.py -r [--run] -s [-status] -f [--finalise] -m [--merge]")
+    parser = argparse.ArgumentParser(description = "Usage: python job_manager.py [-w] [--write] -r [--run] -s [-status] -f [--finalise] -m [--merge] -c [--clean] -k [--kill]")
+    parser.add_argument('--write', '-w', action = "store_true")
     parser.add_argument('--run', '-r', action = "store_true")
     parser.add_argument('--status', '-s', action = "store_true")
     parser.add_argument('--finalise', '-f', action = "store_true")
     parser.add_argument('--merge', '-m', action = "store_true")
+    parser.add_argument('--clean', '-c', action = "store_true")
+    parser.add_argument('--kill', '-k', action = "store_true")
     manager_args = parser.parse_args()
 
-    if manager_args.run:
-       run(args)
-       return
+    if manager_args.run or manager_args.write:
+         run(args, manager_args.write)
+         return
 
     if manager_args.status:
-       print("Writing job statuses to joblog.txt")
-       os.system("arcstat -j multijobs.dat > joblog.txt")
-       return
+         print("Writing job statuses to logfile.txt")
+         os.system("rm logfile.txt")
+         job_statuses = os.popen("arcstat -j multijobs.dat").read()
+
+         n_running = os.popen("arcstat -j multijobs.dat | grep -i 'Running' | wc -l").read()
+         n_finished = os.popen("arcstat -j multijobs.dat | grep -i 'Finished' | wc -l").read()
+         n_finishing = os.popen("arcstat -j multijobs.dat | grep -i 'Finishing' | wc -l").read()
+         n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
+         n_queueing = os.popen("arcstat -j multijobs.dat | grep -i 'Queueing' | wc -l").read()
+         n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
+         n_tot = n_running + n_finished + n_finishing + n_failed + n_queuing + n_missing
+
+         with open("logfile.txt", "a") as logfile:
+             logfile.write("=" * 80 + "\n")
+             logfile.write("-" * 32 + " JOB INFORMATION " + "-" * 31 + "\n")
+             logfile.write("=" * 80 + "\n")
+             logfile.write(job_statuses)
+             logfile.write("\n" + "=" * 80 + "\n")
+             logfile.write("-" * 30 + " SUMMARY INFORMATION " + "-" * 29 + "\n")
+             logfile.write("=" * 80 + "\n")
+             logfile.write("Total jobs: %s\n" % str(n_tot))
+             logfile.write("Number of running jobs: %s\n" % str(n_running))
+             logfile.write("Number of finished jobs: %s\n" % str(n_finished))
+             logfile.write("Number of finishing jobs: %s\n" % str(n_finishing))
+             logfile.write("Number of failed jobs: %s\n" % str(n_failed))
+             logfile.write("Number of queueing jobs: %s\n" % str(n_queueing))
+             logfile.write("Number of missing jobs: %s\n" % str(n_missing)) 
+
+         return
+
+    if manager_args.clean:
+        os.system("arcclean -j multijobs.dat")
+        return
+
+    if manager_args.kill:
+        os.system("arckill -j multijobs.dat")
+        return
 
     merger = JobMerger(args["user_name"], args["output_dir"])
     if manager_args.finalise:
