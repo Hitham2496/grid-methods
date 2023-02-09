@@ -84,7 +84,7 @@ def main(args):
          n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
          n_queueing = os.popen("arcstat -j multijobs.dat | grep -i 'Queueing' | wc -l").read()
          n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
-         n_tot = n_running + n_finished + n_finishing + n_failed + n_queuing + n_missing
+         n_tot = int(n_running) + int(n_finished) + int(n_finishing) + int(n_failed) + int(n_queuing) + int(n_missing)
 
          with open("logfile.txt", "a") as logfile:
              logfile.write("=" * 80 + "\n")
