@@ -41,25 +41,25 @@ The modifications are all in the `args` dictionary parameter in `main()`, no oth
 
 Then one needs only run the script with:
 ```
-python hejpythia_manager.py -r
+python3 hejpythia_manager.py -r
 ```
 One may produce a dry run by only writing the xrsl files with:
 ```
-python hejpythia_manager.py -w
+python3 hejpythia_manager.py -w
 ```
 though it is recommended to only write a small number of files and inspect them for debugging purposes.
 
 To interact with the job database (written to `$PWD/multijobs.dat`) one may use the standard [arc](https://www.ippp.dur.ac.uk/~andersen/GridTutorial/arc.html) tools, a wrapper around `arcstat` is provided with the manager script:
 ```
-python hejpythia_manager.py -s
+python3 hejpythia_manager.py -s
 ```
 After concluding the run one may supply the `--finalise` or `-f` flag to the manager to copy the output files to a temporary directory in `/scratch/user_name/`, i.e.
 ```
-python hejpythia_manager.py -f
+python3 hejpythia_manager.py -f
 ```
 The results may then be merged (and pruned if desired) by supplying the `--merge` or `-m` flag:
 ```
-python hejpythia_manager.py -m
+python3 hejpythia_manager.py -m
 ```
 which writes the merged analysis output to `$PWD/results/merged`, in the future this method will also write the merged seeds to a log file.
 
