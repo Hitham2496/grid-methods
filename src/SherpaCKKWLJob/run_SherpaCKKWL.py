@@ -371,7 +371,7 @@ def parse():
 
 def main():
     """
-    Run multiple HEJ+Pythia jobs per submission node.
+    Run multiple HEJ+Pythia (Sherpa+CKKWL) jobs per submission node.
     """
     args = parse()
 
