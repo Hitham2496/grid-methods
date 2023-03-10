@@ -84,7 +84,7 @@ def main(args):
          n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
          n_queueing = os.popen("arcstat -j multijobs.dat | grep -i 'Queueing' | wc -l").read()
          n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
-         n_tot = int(n_running) + int(n_finished) + int(n_finishing) + int(n_failed) + int(n_queuing) + int(n_missing)
+         n_tot = int(n_running) + int(n_finished) + int(n_finishing) + int(n_failed) + int(n_queueing) + int(n_missing)
 
          with open("logfile.txt", "a") as logfile:
              logfile.write("=" * 80 + "\n")
@@ -112,7 +112,7 @@ def main(args):
         os.system("arckill -j multijobs.dat")
         return
 
-    merger = HejPythiaMerger(args["user_name"], args["output_dir"])
+    merger = SherpaCKKWLMerger(args["user_name"], args["output_dir"])
     if manager_args.finalise:
         merger.copy_files()
         os.system("arcclean -j multijobs.dat")
@@ -138,15 +138,15 @@ if __name__ == """__main__""":
     """
 
     args = {
-           "n_min"      : 1,
+           "n_min"      : 100,
            "n_max"      : 100,
-           "events"     : 100000,
+           "events"     : 100,#000,
            "processes"  : 4,
            "user_name"  : "hhassan",
-           "job_name"   : "/mt/home/hhassan/HEP-Tools/grid-methods/src/HejPythiaJob/run_SherpaCKKWL.py",
-           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
+           "job_name"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/grid/run_SherpaCKKWL.py",
+           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
-           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/azimuthal-20GeV-2jet-single-run",
+           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/ckkwl-test-run-code-review",
     }
 
     main(args)

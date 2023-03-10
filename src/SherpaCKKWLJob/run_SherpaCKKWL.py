@@ -145,6 +145,9 @@ class SherpaCKKWLJob():
         seed = self.get_unique_seed(run_number)
         cmd = "cp -r %s/Results.db %s/Process %s/Run.dat %s/config.yml %s/hej_merging.cmnd ." % (str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir))
         os.system(cmd)
+        cmd = "cp -r %s/NNPDF* ." % (str(self.base_dir))
+        os.system(cmd)
+        os.environ["LHAPDF_DATA_PATH"] = "."
 
         # Run Sherpa
         print("Starting Sherpa run at:")
@@ -153,6 +156,10 @@ class SherpaCKKWLJob():
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
+
+        # Remove PDF library
+        cmd = 'rm -r NNPDF*'
+        os.system(cmd)
 
         # Modify HEJ input parameter seeds
         cmd = "cp config.yml config_%s.yml" % (str(seed))
@@ -179,7 +186,7 @@ class SherpaCKKWLJob():
         os.system(cmd)
         cmd = "sed -i 's/Merging:HEJconfigPath.*=.*/Merging:HEJconfigPath = config_%s.yml/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
         os.system(cmd)
-        cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
+        cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed))
         os.system(cmd)
 
         # Run HEJ+Pythia
@@ -376,7 +383,7 @@ def main():
     args = parse()
 
     t0 = time.time()
-    hejpythia = HejPythiaJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
+    hejpythia = SherpaCKKWLJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
     hejpythia.set_env()
 
     if args.processes[0] > 4:
@@ -402,4 +409,8 @@ def main():
 
 
 if __name__ == """__main__""":
-    main()
+    #main()
+    sherpajob = SherpaCKKWLJob("hhassan",100,"/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/","/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet","gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/ckkwl-test-run-code-review")
+    sherpajob.set_env()
+    sherpajob.run_job(4,100)
+    
