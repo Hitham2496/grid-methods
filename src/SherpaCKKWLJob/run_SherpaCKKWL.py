@@ -164,6 +164,12 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/.*lhe/  - HEJ_%s.lhe/g' config_%s.yml" % (str(seed), str(seed))
         os.system(cmd)
 
+        # Prepare SherpaLHE file with appropriate weight index and version for Pythia
+        cmd = "sed -i 's/version=\"1\.0\"/version=\"2\.0\"/g' SherpaLHE_%s.lhe" % (str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/247000 247000    1/247000 247000    4/g' SherpaLHE_%s.lhe" % (str(seed))
+        os.system(cmd)
+
         # Modify HEJ+Pythia parameter seeds
         cmd = "cp hej_merging.cmnd hej_merging_%s.cmnd" % (str(seed))
         os.system(cmd)
@@ -177,11 +183,11 @@ class SherpaCKKWLJob():
         os.system(cmd)
 
         # Run HEJ+Pythia
-        print("Starting HEJ+Pythia run at:")
+        print("Starting HEJ+Pythia (Sherpa+CKKWL) run at:")
         os.system("date")
         cmd = "HEJ_Pythia hej_merging_%s.cmnd SherpaLHE_%s.lhe" % (str(seed), str(seed))
         os.system(cmd)
-        print("HEJ+Pythia finished running at:")
+        print("HEJ+Pythia (Sherpa+CKKWL) finished running at:")
         os.system("date")
 
         self.print_info()
