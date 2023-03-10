@@ -21,7 +21,7 @@ class SherpaCKKWLJob():
             user_name : str user name for gridui and dpm grid storage
             job_number : index of the submission
             base_dir : base directory for input files
-            rivet_dir : path for compiled rivet analysis libraries
+            rivet_dir : path for compiled rivet analysis libraries, and PDFs
             output_dir : output directory on grid storage server, with protocol
         """
         self.user_name = str(user_name)
@@ -56,6 +56,7 @@ class SherpaCKKWLJob():
         cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/Sherpa/Sherpa.tar.gz . -f" % self.user_name
         os.system(cmd)
         os.environ["RIVET_ANALYSIS_PATH"] = str(self.rivet_dir)
+        os.environ["LHAPDF_DATA_PATH"] = str(self.rivet_dir)
 
         print("untarring Sherpa.tar.gz")
         os.system("tar -xzf Sherpa.tar.gz")
@@ -145,9 +146,6 @@ class SherpaCKKWLJob():
         seed = self.get_unique_seed(run_number)
         cmd = "cp -r %s/Results.db %s/Process %s/Run.dat %s/config.yml %s/hej_merging.cmnd ." % (str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir))
         os.system(cmd)
-        cmd = "cp -r %s/NNPDF* ." % (str(self.base_dir))
-        os.system(cmd)
-        os.environ["LHAPDF_DATA_PATH"] = "."
 
         # Run Sherpa
         print("Starting Sherpa run at:")
@@ -156,10 +154,6 @@ class SherpaCKKWLJob():
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
-
-        # Remove PDF library
-        cmd = 'rm -r NNPDF*'
-        os.system(cmd)
 
         # Modify HEJ input parameter seeds
         cmd = "cp config.yml config_%s.yml" % (str(seed))
