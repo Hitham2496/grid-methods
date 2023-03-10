@@ -318,37 +318,13 @@ class SherpaCKKWLMerger():
         os.system(cmd)
         print("LO yoda files merged")
 
-        # Merge HEJ results
-        print("Merging HEJ yoda files")
-        if with_variations:
-            cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF2* -o results/merged/HEJ-MUR2-MUF2.yoda"
-            os.system(cmd)
-            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF2* -o results/merged/HEJ-MUR1-MUF2.yoda"
-            # os.system(cmd)
-            # cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF1* -o results/merged/HEJ-MUR2-MUF1.yoda"
-            # os.system(cmd)
-            # cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF1* -o results/merged/HEJ-MUR0.5-MUF1.yoda"
-            # os.system(cmd)
-            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF0.5* -o results/merged/HEJ-MUR1-MUF0.5.yoda"
-            # os.system(cmd)
-            cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF0.5* -o results/merged/HEJ-MUR0.5-MUF0.5.yoda"
-            os.system(cmd)
-        
-        cmd = "rm results/hej-output/HEJ*Mu*"
-        os.system(cmd)
-        cmd = "yodamerge results/hej-output/HEJ* -o results/merged/HEJ.yoda"
-        os.system(cmd)
-        cmd = "rm -r results/hej-output"
-        os.system(cmd)
-        print("HEJ yoda files merged")
-
-        # Merge HEJ+Pythia results
-        print("Merging HEJ+Pythia yoda files")
+        # Merge HEJ+Pythia (Sherpa+CKKWL) results
+        print("Merging HEJ+Pythia (Sherpa+CKKWL) yoda files")
         cmd = "yodamerge results/hej-pythia-output/HEJ* -o results/merged/HEJmerging.yoda"
         os.system(cmd)
         cmd = "rm -r results/hej-pythia-output"
         os.system(cmd)
-        print("HEJ+Pythia yoda files merged")
+        print("HEJ+Pythia (Sherpa+CKKWL) yoda files merged")
 
 
     def clear_files(self):
