@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from run_SherpaCKKWL import SherpaCKKWLJob, SherpaCKKWLMerger
+from run_sherpackkwl import SherpaCKKWLJob, SherpaCKKWLMerger
 import argparse
 
 
