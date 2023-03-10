@@ -40,11 +40,11 @@ class SherpaCKKWLJob():
 
     def set_env(self):
         """
-        Sets the environment for a HEJ+Pythia run by downloading Sherpa, libSherpaLHEfix.so
+        Sets the environment for a Sherpa+CKKWL run by downloading Sherpa, libSherpaLHEfix.so
         HEJ, HEJ_Pythia and rivet analyses and setting $PATH and $LD_LIBRARY_PATH
         and $RIVET_ANALYSIS_PATH.
         """
-        print("Setting environment for HEJ+Pythia run")
+        print("Setting environment for Sherpa+CKKWL run")
         os.system("date")
         cmd = "source /mt/home/%s/.bashrc" % (self.user_name)
         os.system(cmd)
@@ -138,7 +138,7 @@ class SherpaCKKWLJob():
 
     def run_job(self, run_number, events):
         """
-        The main loop for the HEJ+Pythia run given the run index on the current node
+        The main loop for the Sherpa+CKKWL run given the run index on the current node
         and a number of events.
         """
         # TODO: Don't hardcode names of runfiles (even though they are standard)
@@ -164,14 +164,6 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/.*lhe/  - HEJ_%s.lhe/g' config_%s.yml" % (str(seed), str(seed))
         os.system(cmd)
 
-        # Run HEJ
-        print("Starting HEJ run at:")
-        os.system("date")
-        cmd = "HEJ config_%s.yml SherpaLHE_%s.lhe.gz" % (str(seed), str(seed))
-        os.system(cmd)
-        print("HEJ finished running at:")
-        os.system("date")
-
         # Modify HEJ+Pythia parameter seeds
         cmd = "cp hej_merging.cmnd hej_merging_%s.cmnd" % (str(seed))
         os.system(cmd)
@@ -180,6 +172,8 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/rivet:output.*=.*/rivet:output = HEJmerging_%s.yoda/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
         os.system(cmd)
         cmd = "sed -i 's/Merging:HEJconfigPath.*=.*/Merging:HEJconfigPath = config_%s.yml/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
         os.system(cmd)
 
         # Run HEJ+Pythia
