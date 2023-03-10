@@ -149,7 +149,7 @@ class SherpaCKKWLJob():
         # Run Sherpa
         print("Starting Sherpa run at:")
         os.system("date")
-        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] USE_GZIP=1" % (str(seed), str(events), str(seed), str(seed))
+        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] USE_GZIP=0" % (str(seed), str(events), str(seed), str(seed))
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
