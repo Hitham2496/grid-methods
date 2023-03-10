@@ -245,7 +245,8 @@ class SherpaCKKWLMerger():
         if self.prune:
             self.prune_script = prune_script
 
-        self.scratch_dir = "/scratch/%s/tmp_output" % (str(user_name))
+        addendum = os.path.basename(os.path.normpath(grid_output_dir))
+        self.scratch_dir = "/scratch/%s/tmp_output_%s" % (str(user_name), str(addendum))
         cmd = "mkdir %s" % self.scratch_dir
         os.system(cmd)
 
