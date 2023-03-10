@@ -409,8 +409,5 @@ def main():
 
 
 if __name__ == """__main__""":
-    #main()
-    sherpajob = SherpaCKKWLJob("hhassan",100,"/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/","/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet","gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/ckkwl-test-run-code-review")
-    sherpajob.set_env()
-    sherpajob.run_job(4,100)
+    main()
     
