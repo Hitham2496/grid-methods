@@ -227,7 +227,7 @@ class SherpaCKKWLJob():
 
 
 
-class HejPythiaMerger():
+class SherpaCKKWLMerger():
 
 
     def __init__(self, user_name, grid_output_dir, prune=False, prune_script="yodastats"):
@@ -258,7 +258,6 @@ class HejPythiaMerger():
         os.system(cmd)
         os.system("mkdir results")
         os.system("mkdir results/lo-output")
-        os.system("mkdir results/hej-output")
         os.system("mkdir results/hej-pythia-output")
 
         print("Organising output into categories of runs")
@@ -279,8 +278,6 @@ class HejPythiaMerger():
         cmd = "tar -xzf %s/%s >> tmp_logfile 2>&1" % (self.scratch_dir, filename)
         os.system(cmd)
         cmd = "mv LO*yoda results/lo-output >> tmp_logfile 2>&1"
-        os.system(cmd)
-        cmd = "mv HEJ_*yoda results/hej-output >> tmp_logfile 2>&1"
         os.system(cmd)
         cmd = "mv HEJmerging_*yoda results/hej-pythia-output >> tmp_logfile 2>&1"
         os.system(cmd)
