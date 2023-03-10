@@ -179,7 +179,7 @@ class SherpaCKKWLJob():
         # Run HEJ+Pythia
         print("Starting HEJ+Pythia run at:")
         os.system("date")
-        cmd = "HEJ_Pythia hej_merging_%s.cmnd HEJ_%s.lhe" % (str(seed), str(seed))
+        cmd = "HEJ_Pythia hej_merging_%s.cmnd SherpaLHE_%s.lhe" % (str(seed), str(seed))
         os.system(cmd)
         print("HEJ+Pythia finished running at:")
         os.system("date")
