@@ -12,12 +12,12 @@ import time
 import multiprocessing
 
 
-class HejPythiaJob(): 
+class SherpaCKKWLJob(): 
 
 
     def __init__(self, user_name, job_number, base_dir, rivet_dir, output_dir):
         """
-        Initialises a HEJ+Pythia run given:
+        Initialises a Sherpa+CKKWL run given:
             user_name : str user name for gridui and dpm grid storage
             job_number : index of the submission
             base_dir : base directory for input files
