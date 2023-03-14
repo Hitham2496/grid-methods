@@ -78,7 +78,7 @@ def main(args):
          n_finished = os.popen("arcstat -j multijobs.dat | grep -i 'Finished' | wc -l").read()
          n_finishing = os.popen("arcstat -j multijobs.dat | grep -i 'Finishing' | wc -l").read()
          n_failed = os.popen("arcstat -j multijobs.dat | grep -i 'Failed' | wc -l").read()
-         n_queueing = os.popen("arcstat -j multijobs.dat | grep -i 'Queueing' | wc -l").read()
+         n_queuing = os.popen("arcstat -j multijobs.dat | grep -i 'Queuing' | wc -l").read()
          n_missing = os.popen("arcstat -j multijobs.dat | grep -i 'Waiting' | wc -l").read()
          n_tot = n_running + n_finished + n_finishing + n_failed + n_queuing + n_missing
 
@@ -95,7 +95,7 @@ def main(args):
              logfile.write("Number of finished jobs: %s\n" % str(n_finished))
              logfile.write("Number of finishing jobs: %s\n" % str(n_finishing))
              logfile.write("Number of failed jobs: %s\n" % str(n_failed))
-             logfile.write("Number of queueing jobs: %s\n" % str(n_queueing))
+             logfile.write("Number of queuing jobs: %s\n" % str(n_queuing))
              logfile.write("Number of missing jobs: %s\n" % str(n_missing)) 
 
          return
