@@ -138,15 +138,15 @@ if __name__ == """__main__""":
     """
 
     args = {
-           "n_min"      : 100,
-           "n_max"      : 100,
-           "events"     : 100,#000,
+           "n_min"      : 501,
+           "n_max"      : 750,
+           "events"     : 50000,
            "processes"  : 4,
            "user_name"  : "hhassan",
-           "job_name"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/grid/run_SherpaCKKWL.py",
-           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/",
+           "job_name"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/WJETS/7TeV/7TeV_W_20GeV_y4pt4_LO_PDF/1jw/grid/run_sherpackkwl.py",
+           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/WJETS/7TeV/7TeV_W_20GeV_y4pt4_LO_PDF/1jw/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
-           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/ckkwl-test-run-code-review",
+           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/WJETS/1jw-20GeV-ckkwl-full",
     }
 
     main(args)
