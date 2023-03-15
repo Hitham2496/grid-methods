@@ -150,7 +150,7 @@ class SherpaCKKWLJob():
         # Run Sherpa
         print("Starting Sherpa run at:")
         os.system("date")
-        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] USE_GZIP=0" % (str(seed), str(events), str(seed), str(seed))
+        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] EVENT_GENERATION_MODE=P USE_GZIP=0" % (str(seed), str(events), str(seed), str(seed))
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
@@ -167,8 +167,6 @@ class SherpaCKKWLJob():
 
         # Prepare SherpaLHE file with appropriate weight index and version for Pythia
         cmd = "sed -i 's/version=\"1\.0\"/version=\"2\.0\"/g' SherpaLHE_%s.lhe" % (str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/247000 247000    1/247000 247000    4/g' SherpaLHE_%s.lhe" % (str(seed))
         os.system(cmd)
 
         # Modify HEJ+Pythia parameter seeds
