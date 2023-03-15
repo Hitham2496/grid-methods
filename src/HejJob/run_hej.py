@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 """
-Runs a multiprocessed Sherpa CKKWL job on a single grid node.
-This is for enabling 0 and 1 jet predictions to be made through
-Sherpa + Pythia pipeline.
-
-The code is based on run_hejpythia.py
+Runs a multiprocessed HEJ job on a single grid node.
 """
 import argparse
 import os
@@ -12,12 +8,12 @@ import time
 import multiprocessing
 
 
-class SherpaCKKWLJob(): 
+class HejJob(): 
 
 
     def __init__(self, user_name, job_number, base_dir, rivet_dir, output_dir):
         """
-        Initialises a Sherpa+CKKWL run given:
+        Initialises a HEJ run given:
             user_name : str user name for gridui and dpm grid storage
             job_number : index of the submission
             base_dir : base directory for input files
@@ -40,44 +36,15 @@ class SherpaCKKWLJob():
 
     def set_env(self):
         """
-        Sets the environment for a Sherpa+CKKWL run by downloading Sherpa, libSherpaLHEfix.so
-        HEJ, HEJ_Pythia and rivet analyses and setting $PATH and $LD_LIBRARY_PATH
-        and $RIVET_ANALYSIS_PATH.
+        Sets the environment for a HEJ run by downloading HEJ
+        and setting $PATH and $LD_LIBRARY_PATH and $RIVET_ANALYSIS_PATH.
         """
-        print("Setting environment for Sherpa+CKKWL run")
+        print("Setting environment for HEJ run")
         os.system("date")
-        cmd = "source /mt/home/%s/.bashrc" % (self.user_name)
-        os.system(cmd)
         os.system("source /cvmfs/pheno.egi.eu/HEJ/HEJ_env.sh")
         os.environ["MYPROXY_SERVER"] = "myproxy.gridpp.rl.ac.uk"
-
-        print("Copying Sherpa.tar.gz from grid storage")
-        os.system("mkdir ./Sherpa")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/Sherpa/Sherpa.tar.gz . -f" % self.user_name
-        os.system(cmd)
         os.environ["RIVET_ANALYSIS_PATH"] = str(self.rivet_dir)
         os.environ["LHAPDF_DATA_PATH"] = str(self.rivet_dir)
-
-        print("untarring Sherpa.tar.gz")
-        os.system("tar -xzf Sherpa.tar.gz")
-        os.system("mv bin lib include share Sherpa")
-
-        print("Setting Sherpa path variables")
-        os.environ["SHERPA_INCLUDE_PATH"] = "%s/Sherpa/include/SHERPA-MC" % str(os.getcwd())
-        os.environ["SHERPA_SHARE_PATH"] = "%s/Sherpa/share/SHERPA-MC" % str(os.getcwd())
-        os.environ["SHERPA_LIBRARY_PATH"] = "%s/Sherpa/lib/SHERPA-MC" % str(os.getcwd())
-        
-        print("Copying libSherpaLHEfix.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/lib/libSherpaLHEfix.tar.gz ./ -f" % self.user_name
-        os.system(cmd)
-        print("untarring libSherpaLHEfix.tar.gz")
-        os.system("tar -xzf libSherpaLHEfix.tar.gz")
-        os.environ["SHERPA_LHEFIX_PATH"] = "%s/lib" % str(os.getcwd())
-        
-        print("Setting environment for Sherpa run")
-        os.environ["PATH"] = "%s/Sherpa/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "%s:%s" % (str(os.environ.get("SHERPA_LIBRARY_PATH",'')), str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "%s:%s" % (str(os.environ.get("SHERPA_LHEFIX_PATH",'')), str(os.environ.get("LD_LIBRARY_PATH",'')))
 
         print("Downloading HEJ.tar.gz from grid storage")
         cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/HEJ/HEJ.tar.gz ./ -f" % self.user_name
@@ -86,29 +53,12 @@ class SherpaCKKWLJob():
         os.system("tar -xzf HEJ.tar.gz")
         os.system("rm HEJ.tar.gz")
  
-        print("Setting environment for HEJ run")
+        print("Setting environment for Sherpa and HEJ run (V2 stack)")
+        os.environ["PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/Sherpa/bin:%s" % (str(os.environ.get("PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/Sherpa/lib/SHERPA-MC:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         self.set_hej_env()
         os.environ["LD_LIBRARY_PATH"] = "%s/HEJ/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["PATH"] = "%s/HEJ/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
-
-        print("Downloading Pythia.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/Pythia/Pythia.tar.gz ./ -f" % self.user_name
-        os.system(cmd)
-        print("untarring Pythia.tar.gz")
-        os.system("tar -xzf Pythia.tar.gz")
-        os.system("rm -f Pythia.tar.gz")
-        
-        print("Downloading HEJ_pythia.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/HEJ_pythia/HEJ_pythia.tar.gz ./ -f" % self.user_name
-        os.system(cmd)
-        print("untarring HEJ_pythia.tar.gz")
-        os.system("tar -xzf HEJ_pythia.tar.gz")
-        os.system("rm HEJ_pythia.tar.gz")
-
-        print("Setting environment for HEJ_Pythia")
-        os.environ["PATH"] = "%s/HEJ_pythia/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "%s/Pythia/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "%s/HEJ_pythia/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
 
         print("Environment set at:")
         os.system("date")
@@ -116,18 +66,18 @@ class SherpaCKKWLJob():
 
     def set_hej_env(self):
         """
-        Sets the HEJ environment
+        Sets the HEJ environment from the V2 stack.
         """
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/boost/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/gcc_9/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/gcc_9/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/CLHEP/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/fastjet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/LHAPDF/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/QCDloop/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/rivet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/yaml-cpp/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/boost/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/gcc_9/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/gcc_9/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/CLHEP/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/fastjet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/LHAPDF/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/QCDloop/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/rivet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/yaml-cpp/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+	os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         
 
     def get_unique_seed(self, run_number):
@@ -139,18 +89,18 @@ class SherpaCKKWLJob():
 
     def run_job(self, run_number, events):
         """
-        The main loop for the Sherpa+CKKWL run given the run index on the current node
+        The main loop for the HEJ run given the run index on the current node
         and a number of events.
         """
         # TODO: Don't hardcode names of runfiles (even though they are standard)
         seed = self.get_unique_seed(run_number)
-        cmd = "cp -r %s/Results.db %s/Process %s/Run.dat %s/config.yml %s/hej_merging.cmnd ." % (str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir))
+        cmd = "cp -r %s/Results.db %s/Process %s/Run.dat %s/config.yml ." % (str(self.base_dir), str(self.base_dir), str(self.base_dir), str(self.base_dir))
         os.system(cmd)
 
         # Run Sherpa
         print("Starting Sherpa run at:")
         os.system("date")
-        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEfix[SherpaLHE_%s] USE_GZIP=0" % (str(seed), str(events), str(seed), str(seed))
+        cmd = "Sherpa -f Run.dat -R %s -e %s ANALYSIS_OUTPUT=LO-%s EVENT_OUTPUT=LHEF[SherpaLHE_%s] USE_GZIP=1" % (str(seed), str(events), str(seed), str(seed))
         os.system(cmd)
         print("Sherpa finished running at:")
         os.system("date")
@@ -162,33 +112,13 @@ class SherpaCKKWLJob():
         os.system(cmd)
         cmd = "sed -i 's/output:.*HEJ.*/output: HEJ_%s/g' config_%s.yml" % (str(seed), str(seed))
         os.system(cmd)
-        cmd = "sed -i 's/.*lhe/  - HEJ_%s.lhe/g' config_%s.yml" % (str(seed), str(seed))
-        os.system(cmd)
 
-        # Prepare SherpaLHE file with appropriate weight index and version for Pythia
-        cmd = "sed -i 's/version=\"1\.0\"/version=\"2\.0\"/g' SherpaLHE_%s.lhe" % (str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/247000 247000    1/247000 247000    4/g' SherpaLHE_%s.lhe" % (str(seed))
-        os.system(cmd)
-
-        # Modify HEJ+Pythia parameter seeds
-        cmd = "cp hej_merging.cmnd hej_merging_%s.cmnd" % (str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/Random:seed.*=.*/Random:seed = %s/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/rivet:output.*=.*/rivet:output = HEJmerging_%s.yoda/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/Merging:HEJconfigPath.*=.*/Merging:HEJconfigPath = config_%s.yml/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
-        os.system(cmd)
-        cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed))
-        os.system(cmd)
-
-        # Run HEJ+Pythia
-        print("Starting HEJ+Pythia (Sherpa+CKKWL) run at:")
+        # Run HEJ
+        print("Starting HEJ run at:")
         os.system("date")
-        cmd = "HEJ_Pythia hej_merging_%s.cmnd SherpaLHE_%s.lhe" % (str(seed), str(seed))
+        cmd = "HEJ config_%s.yml SherpaLHE_%s.lhe.gz" % (str(seed), str(seed))
         os.system(cmd)
-        print("HEJ+Pythia (Sherpa+CKKWL) finished running at:")
+        print("HEJ finished running at:")
         os.system("date")
 
         self.print_info()
@@ -200,11 +130,11 @@ class SherpaCKKWLJob():
         Copies the analysis output files and input cards to the grid storage.
         """
         # Compress the output into one tarball
-        cmd = "tar -czvf hej_pythia_output%s.tar.gz *%s*.yoda *%s.cmnd *%s.yml *dat" % (str(seed), str(seed), str(seed), str(seed))
+        cmd = "tar -czvf hej_output%s.tar.gz *%s*.yoda *%s.yml *dat" % (str(seed), str(seed), str(seed))
         os.system(cmd)
 
         # Copy the tarball of results to the grid storage
-        cmd = "gfal-copy hej_pythia_output%s.tar.gz %s -f" % (str(seed), str(self.output_dir))
+        cmd = "gfal-copy hej_output%s.tar.gz %s -f" % (str(seed), str(self.output_dir))
         os.system(cmd)
 
 
@@ -212,7 +142,7 @@ class SherpaCKKWLJob():
         """
         Removes the remaining files.
         """
-        os.system("rm *gz *yml *dat *yoda *cmnd *tex *lhe* Results* -r Process Sherpa HEJ HEJ_pythia lib bin include share Pythia Status* -f")
+        os.system("rm *gz *yml *dat *yoda *tex *lhe* Results* -r Process Sherpa HEJ lib bin include share Status* -f")
 
 
     def print_info(self):
@@ -228,7 +158,7 @@ class SherpaCKKWLJob():
 
 
 
-class SherpaCKKWLMerger():
+class HejMerger():
 
 
     def __init__(self, user_name, grid_output_dir, prune=False, prune_script="yodastats"):
@@ -260,7 +190,7 @@ class SherpaCKKWLMerger():
         os.system(cmd)
         os.system("mkdir results")
         os.system("mkdir results/lo-output")
-        os.system("mkdir results/hej-pythia-output")
+        os.system("mkdir results/hej-output")
 
         print("Organising output into categories of runs")
         files = os.listdir(self.scratch_dir)
@@ -281,9 +211,9 @@ class SherpaCKKWLMerger():
         os.system(cmd)
         cmd = "mv LO*yoda results/lo-output >> tmp_logfile 2>&1"
         os.system(cmd)
-        cmd = "mv HEJmerging_*yoda results/hej-pythia-output >> tmp_logfile 2>&1"
+        cmd = "mv HEJ_*yoda results/hej-output >> tmp_logfile 2>&1"
         os.system(cmd)
-        cmd = "rm *yoda *cmnd *yml Run.dat >> tmp_logfile 2>&1"
+        cmd = "rm *yoda *yml Run.dat >> tmp_logfile 2>&1"
         os.system(cmd)
 
 
@@ -320,13 +250,29 @@ class SherpaCKKWLMerger():
         os.system(cmd)
         print("LO yoda files merged")
 
-        # Merge HEJ+Pythia (Sherpa+CKKWL) results
-        print("Merging HEJ+Pythia (Sherpa+CKKWL) yoda files")
-        cmd = "yodamerge results/hej-pythia-output/HEJ* -o results/merged/HEJmerging.yoda"
+        # Merge HEJ results
+        print("Merging HEJ yoda files")
+        if with_variations:
+            cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF2* -o results/merged/HEJ-MUR2-MUF2.yoda"
+            os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF2* -o results/merged/HEJ-MUR1-MUF2.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR2_MuF1* -o results/merged/HEJ-MUR2-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF1* -o results/merged/HEJ-MUR0.5-MUF1.yoda"
+            # os.system(cmd)
+            # cmd = "yodamerge results/hej-output/HEJ*MuR1_MuF0.5* -o results/merged/HEJ-MUR1-MUF0.5.yoda"
+            # os.system(cmd)
+            cmd = "yodamerge results/hej-output/HEJ*MuR0.5_MuF0.5* -o results/merged/HEJ-MUR0.5-MUF0.5.yoda"
+            os.system(cmd)
+        
+        cmd = "rm results/hej-output/HEJ*Mu*"
         os.system(cmd)
-        cmd = "rm -r results/hej-pythia-output"
+        cmd = "yodamerge results/hej-output/HEJ* -o results/merged/HEJ.yoda"
         os.system(cmd)
-        print("HEJ+Pythia (Sherpa+CKKWL) yoda files merged")
+        cmd = "rm -r results/hej-output"
+        os.system(cmd)
+        print("HEJ yoda files merged")
 
 
     def clear_files(self):
@@ -360,7 +306,7 @@ def parse():
         grid_output_dir : directory on grid storage for output, with protocol
         name : job name
     """
-    parser = argparse.ArgumentParser(description = "Usage: python run_hejpythia.py -u user_name -j job_number -p runs_per_job -e events -b base_dir -r rivet_dir -o grid_output_dir")
+    parser = argparse.ArgumentParser(description = "Usage: python run_hej.py -u user_name -j job_number -p runs_per_job -e events -b base_dir -r rivet_dir -o grid_output_dir")
     parser.add_argument('--user_name', '-u', nargs = 1, type = str)
     parser.add_argument('--job_number', '-j', nargs = 1, type = int, default = 1)
     parser.add_argument('--processes', '-p', nargs = 1, type = int, default = 1)
@@ -373,13 +319,13 @@ def parse():
 
 def main():
     """
-    Run multiple HEJ+Pythia (Sherpa+CKKWL) jobs per submission node.
+    Run multiple HEJ jobs per submission node.
     """
     args = parse()
 
     t0 = time.time()
-    hejpythia = SherpaCKKWLJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
-    hejpythia.set_env()
+    hej = HejJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
+    hej.set_env()
 
     if args.processes[0] > 4:
         raise(ValueError("Maximum number of processes is 4 per node."))
@@ -387,7 +333,7 @@ def main():
     t1 = time.time()
     jobs = []
     for number in range(args.processes[0]):
-        p = multiprocessing.Process(target = hejpythia.run_job, args = (number, args.events[0]))
+        p = multiprocessing.Process(target = hej.run_job, args = (number, args.events[0]))
         jobs.append(p)
 
     for job in jobs:
@@ -404,5 +350,8 @@ def main():
 
 
 if __name__ == """__main__""":
-    main()
-    
+    # main()
+    hej = HejJob("hhassan", 10, "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/", "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet/", "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/test-hej-methods")
+    hej.set_env()
+
+    hej.run_job(1,100)

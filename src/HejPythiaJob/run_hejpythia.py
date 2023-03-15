@@ -208,7 +208,7 @@ class HejPythiaJob():
         """
         Removes the remaining files.
         """
-        os.system("rm *gz *yml *dat *yoda *cmnd *tex *lhe* Results* -r Process Sherpa HEJ HEJ_pythia lib bin include share Pythia -f")
+        os.system("rm *gz *yml *dat *yoda *cmnd *tex *lhe* Results* -r Process Sherpa HEJ HEJ_pythia lib bin include share Pythia Status* -f")
 
 
     def print_info(self):
