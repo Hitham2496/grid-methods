@@ -142,7 +142,7 @@ class HejJob():
         """
         Removes the remaining files.
         """
-        os.system("rm *gz *yml *dat *yoda *tex *lhe* Results* -r Process Sherpa HEJ lib bin include share -f")
+        os.system("rm *gz *yml *dat *yoda *tex *lhe* Results* -r Process Sherpa HEJ lib bin include share Status* -f")
 
 
     def print_info(self):
@@ -350,4 +350,8 @@ def main():
 
 
 if __name__ == """__main__""":
-    main()
+    # main()
+    hej = HejJob("hhassan", 10, "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04-LO-PDF/5j_HT2_7TeV/", "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet/", "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/test-hej-methods")
+    hej.set_env()
+
+    hej.run_job(1,100)
