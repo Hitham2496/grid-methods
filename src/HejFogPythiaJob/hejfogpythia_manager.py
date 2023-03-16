@@ -138,15 +138,15 @@ if __name__ == """__main__""":
     """
 
     args = {
-           "n_min"      : 1,
-           "n_max"      : 100,
-           "events"     : 100000,
+           "n_min"      : 501,
+           "n_max"      : 750,
+           "events"     : 50000,
            "processes"  : 4,
            "user_name"  : "hhassan",
-           "job_name"   : "/mt/home/hhassan/HEP-Tools/grid-methods/src/HejFogPythiaJob/run_hejfogpythia.py",
-           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
+           "job_name"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04/6j_HT2_7TeV/grid/run_hejpythia.py",
+           "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-30GeV-R04/6j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
-           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/azimuthal-20GeV-2jet-single-run",
+           "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/jet-rates-30GeV-LL-6j",
     }
 
     main(args)

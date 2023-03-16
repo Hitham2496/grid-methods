@@ -131,7 +131,7 @@ class HejFogPythiaJob():
         # Run HEJFOG
         print("Starting HEJFOG run at:")
         os.system("date")
-        cmd = "HEJFOG configFOG_%s.yml" % (str(seed), str(seed))
+        cmd = "HEJFOG configFOG_%s.yml" % (str(seed))
         os.system(cmd)
         print("HEJFOG finished running at:")
         os.system("date")
