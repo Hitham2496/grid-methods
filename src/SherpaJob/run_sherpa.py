@@ -75,13 +75,6 @@ class SherpaJob():
         os.environ["PATH"] = "%s/Sherpa/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "%s:%s" % (str(os.environ.get("SHERPA_LIBRARY_PATH",'')), str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "%s:%s" % (str(os.environ.get("SHERPA_LHEFIX_PATH",'')), str(os.environ.get("LD_LIBRARY_PATH",'')))
-
-        print("Downloading HEJ.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/HEJ/HEJ.tar.gz ./ -f" % self.user_name
-        os.system(cmd)
-        print("untarring HEJ.tar.gz")
-        os.system("tar -xzf HEJ.tar.gz")
-        os.system("rm HEJ.tar.gz")
  
         print("Setting environment for HEJ run - required libraries for Sherpa")
         self.set_hej_env()
@@ -140,7 +133,7 @@ class SherpaJob():
         Copies the analysis output files and input cards to the grid storage.
         """
         # Compress the output into one tarball
-        cmd = "tar -czvf sherpa_output%s.tar.gz *%s*.yoda *dat" % (str(seed), str(seed), str(seed), str(seed))
+        cmd = "tar -czvf sherpa_output%s.tar.gz *%s*.yoda *dat" % (str(seed), str(seed))
         os.system(cmd)
 
         # Copy the tarball of results to the grid storage
@@ -252,7 +245,7 @@ class SherpaMerger():
         os.system(cmd)
         cmd = "yodamerge results/*yoda -o results/merged/Sherpa.yoda"
         os.system(cmd)
-        cmd = "rm -r results"
+        cmd = "rm results/*yoda"
         os.system(cmd)
         print("Sherpa yoda files merged")
 
@@ -333,4 +326,3 @@ def main():
 
 if __name__ == """__main__""":
     main()
-    
