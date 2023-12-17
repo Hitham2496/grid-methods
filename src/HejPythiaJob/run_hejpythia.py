@@ -11,6 +11,8 @@ import multiprocessing
 class HejPythiaJob(): 
 
 
+    grid_base_dir = "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/"
+
     def __init__(self, user_name, job_number, base_dir, rivet_dir, output_dir):
         """
         Initialises a HEJ+Pythia run given:
