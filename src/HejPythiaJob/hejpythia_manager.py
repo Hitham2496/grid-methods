@@ -4,7 +4,7 @@ from run_hejpythia import HejPythiaJob, HejPythiaMerger
 import argparse
 
 
-def make_job_file(user_name, job_number, events, processes, base_dir, rivet_dir, output_dir, name):
+def make_job_file(user_name, job_number, events, processes, base_dir, rivet_dir, output_dir, grid_base, name):
     """
     Creates xrsl submission file given:
         job_number : int between n_min and n_max (inclusive)
@@ -13,11 +13,12 @@ def make_job_file(user_name, job_number, events, processes, base_dir, rivet_dir,
         base_dir : base directory containing run configuration files
         rivet_dir : directory containing rivet analyses
         output_dir : directory on grid storage for output, with protocol
+        grid_base : location of HEP tools on grid storage, with protocol
         name : job name
     """
     print("Writing job%s.jdl" % (job_number))
     cmd = """echo "&(executable = '%s')\n""" % (name)
-    cmd += """(arguments = '-u' '%s' '-j' '%s' '-p' '%s' '-e' '%s' '-b' '%s' '-r' '%s' '-o' '%s')\n""" % (user_name, job_number, processes, events, base_dir, rivet_dir, output_dir)
+    cmd += """(arguments = '-u' '%s' '-j' '%s' '-p' '%s' '-e' '%s' '-b' '%s' '-r' '%s' '-o' '%s')\n""" % (user_name, job_number, processes, events, base_dir, rivet_dir, output_dir, grid_base)
     cmd += """(jobname = %s.%s)\n""" % (name, job_number)
     cmd += """(stdout = 'stdout')\n(stderr = 'stderr')\n(gmlog = 'job%s.log')\n""" % (job_number)
     cmd += """(count = '%s')\n(countpernode = '%s')" """ % (processes, processes)
@@ -33,7 +34,7 @@ def run(args, write_only = False):
     for idx in range(args["n_min"], args["n_max"] + 1):
         make_job_file(args["user_name"], idx, args["events"], args["processes"],
                       args["base_dir"], args["rivet_dir"],
-                      args["output_dir"], args["job_name"])
+                      args["output_dir"], args["grid_base"], args["job_name"])
 
         if not write_only:
             if (idx%2) == 0:
@@ -134,6 +135,7 @@ if __name__ == """__main__""":
         base_dir   : base directory containing run configuration files
         rivet_dir  : directory containing rivet analyses
         output_dir : directory on grid storage for output, with protocol
+        grid_base  : location of HEP tools on grid storage, with protocol
         name : job name
     """
 
@@ -147,6 +149,7 @@ if __name__ == """__main__""":
            "base_dir"   : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/Setup/7TeV/7TeV-20GeV-R06/2j_HT2_7TeV/",
            "rivet_dir"  : "/mt/home/hhassan/Projects/HEJ_PYTHIA/pythia_merging/rivet",
            "output_dir" : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/pythia_merging/azimuthal-20GeV-2jet-single-run",
+           "grid_base"  : "gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/hhassan/",
     }
 
     main(args)
