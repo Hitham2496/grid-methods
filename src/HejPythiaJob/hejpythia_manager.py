@@ -18,7 +18,7 @@ def make_job_file(user_name, job_number, events, processes, base_dir, rivet_dir,
     """
     print("Writing job%s.jdl" % (job_number))
     cmd = """echo "&(executable = '%s')\n""" % (name)
-    cmd += """(arguments = '-u' '%s' '-j' '%s' '-p' '%s' '-e' '%s' '-b' '%s' '-r' '%s' '-o' '%s')\n""" % (user_name, job_number, processes, events, base_dir, rivet_dir, output_dir, grid_base)
+    cmd += """(arguments = '-u' '%s' '-j' '%s' '-p' '%s' '-e' '%s' '-b' '%s' '-r' '%s' '-o' '%s' '-g' '%s')\n""" % (user_name, job_number, processes, events, base_dir, rivet_dir, output_dir, grid_base)
     cmd += """(jobname = %s.%s)\n""" % (name, job_number)
     cmd += """(stdout = 'stdout')\n(stderr = 'stderr')\n(gmlog = 'job%s.log')\n""" % (job_number)
     cmd += """(count = '%s')\n(countpernode = '%s')" """ % (processes, processes)
