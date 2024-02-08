@@ -139,6 +139,29 @@ class SherpaCKKWLJob():
         return int(0.5 * (self.job_number + int(run_number)) * (self.job_number + int(run_number) + 1) + int(run_number))
 
 
+    def get_total_trials(self, filename):
+        """
+        Return total trials from Sherpa LHE file.
+        """
+        import re
+
+        # Open the file
+        with open( filename, 'r') as file:
+            # Read the file line by line
+            for line in file:
+                # Search for the pattern
+                match = re.match(r'# Number of Trials\s+:\s+(\d+)', line)
+                # If a match is found
+                if match:
+                    # Extract the number from the match
+                    number_of_trials = int(match.group(1))
+                    # Break the loop since we found the number
+                    break
+
+        # Print the number of trials
+        return number_of_trials
+
+
     def run_job(self, run_number, events):
         """
         The main loop for the Sherpa+CKKWL run given the run index on the current node
@@ -171,6 +194,10 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/version=\"1\.0\"/version=\"2\.0\"/g' SherpaLHE_%s.lhe" % (str(seed))
         os.system(cmd)
 
+        # Get total number of trials from Sherpa LHE file
+        event_file_name = "SherpaLHE_%s.lhe" % (str(seed))
+        total_trials = self.get_total_trials(event_file_name)
+
         # Modify HEJ+Pythia parameter seeds
         cmd = "cp hej_merging.cmnd hej_merging_%s.cmnd" % (str(seed))
         os.system(cmd)
@@ -181,6 +208,10 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/Merging:HEJconfigPath.*=.*/Merging:HEJconfigPath = config_%s.yml/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
         os.system(cmd)
         cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/Merging:doComplementMerging.*=.*/Merging:doComplementMerging = on/g' hej_merging_%s.cmnd" % (str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/Merging:nTrialsFO.*=.*/Merging:nTrialsFO = *s/g' hej_merging_%s.cmnd" % (str(total_trials), str(seed))
         os.system(cmd)
 
         # Run HEJ+Pythia
