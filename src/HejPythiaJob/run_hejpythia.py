@@ -126,6 +126,22 @@ class HejPythiaJob():
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/rivet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/yaml-cpp/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+ 
+
+    def set_hejv2_env(self):
+        """
+        Sets the HEJV2 environment
+        """
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/boost/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/gcc_11/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/gcc_11/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/CLHEP/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/fastjet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/LHAPDF/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/QCDloop/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/rivet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/yaml-cpp/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
+        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         
 
     def get_unique_seed(self, run_number):
