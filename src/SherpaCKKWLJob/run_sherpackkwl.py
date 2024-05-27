@@ -15,7 +15,7 @@ import multiprocessing
 class SherpaCKKWLJob(): 
 
 
-    def __init__(self, user_name, job_number, base_dir, rivet_dir, output_dir):
+    def __init__(self, user_name, job_number, base_dir, rivet_dir, output_dir, grid_base_dir):
         """
         Initialises a Sherpa+CKKWL run given:
             user_name : str user name for gridui and dpm grid storage
@@ -23,12 +23,14 @@ class SherpaCKKWLJob():
             base_dir : base directory for input files
             rivet_dir : path for compiled rivet analysis libraries, and PDFs
             output_dir : output directory on grid storage server, with protocol
+            grid_base_dir : location of HEP tools on grid storage server, with protocol
         """
         self.user_name = str(user_name)
         self.job_number = int(job_number)
         self.base_dir = str(base_dir)
         self.rivet_dir = str(rivet_dir)
         self.output_dir = str(output_dir)
+        self.grid_base_dir = str(grid_base_dir)
 
 
     def __del__(self):
@@ -53,7 +55,7 @@ class SherpaCKKWLJob():
 
         print("Copying Sherpa.tar.gz from grid storage")
         os.system("mkdir ./Sherpa")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/Sherpa/Sherpa.tar.gz . -f" % self.user_name
+        cmd = "gfal-copy %s/Sherpa/Sherpa.tar.gz . -f" % self.grid_base_dir
         os.system(cmd)
         os.environ["RIVET_ANALYSIS_PATH"] = str(self.rivet_dir)
         os.environ["LHAPDF_DATA_PATH"] = str(self.rivet_dir)
@@ -68,7 +70,7 @@ class SherpaCKKWLJob():
         os.environ["SHERPA_LIBRARY_PATH"] = "%s/Sherpa/lib/SHERPA-MC" % str(os.getcwd())
         
         print("Copying libSherpaLHEfix.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/lib/libSherpaLHEfix.tar.gz ./ -f" % self.user_name
+        cmd = "gfal-copy %s/lib/libSherpaLHEfix.tar.gz ./ -f" % self.grid_base_dir
         os.system(cmd)
         print("untarring libSherpaLHEfix.tar.gz")
         os.system("tar -xzf libSherpaLHEfix.tar.gz")
@@ -80,7 +82,7 @@ class SherpaCKKWLJob():
         os.environ["LD_LIBRARY_PATH"] = "%s:%s" % (str(os.environ.get("SHERPA_LHEFIX_PATH",'')), str(os.environ.get("LD_LIBRARY_PATH",'')))
 
         print("Downloading HEJ.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/HEJ/HEJ.tar.gz ./ -f" % self.user_name
+        cmd = "gfal-copy %s/HEJ/HEJ.tar.gz ./ -f" % self.grid_base_dir
         os.system(cmd)
         print("untarring HEJ.tar.gz")
         os.system("tar -xzf HEJ.tar.gz")
@@ -92,14 +94,14 @@ class SherpaCKKWLJob():
         os.environ["PATH"] = "%s/HEJ/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
 
         print("Downloading Pythia.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/Pythia/Pythia.tar.gz ./ -f" % self.user_name
+        cmd = "gfal-copy %s/Pythia/Pythia.tar.gz ./ -f" % self.grid_base_dir
         os.system(cmd)
         print("untarring Pythia.tar.gz")
         os.system("tar -xzf Pythia.tar.gz")
         os.system("rm -f Pythia.tar.gz")
         
         print("Downloading HEJ_pythia.tar.gz from grid storage")
-        cmd = "gfal-copy gsiftp://se01.dur.scotgrid.ac.uk/dpm/dur.scotgrid.ac.uk/home/pheno/%s/HEJ_pythia/HEJ_pythia.tar.gz ./ -f" % self.user_name
+        cmd = "gfal-copy %s/HEJ_pythia/HEJ_pythia.tar.gz ./ -f" % self.grid_base_dir
         os.system(cmd)
         print("untarring HEJ_pythia.tar.gz")
         os.system("tar -xzf HEJ_pythia.tar.gz")
@@ -137,6 +139,29 @@ class SherpaCKKWLJob():
         return int(0.5 * (self.job_number + int(run_number)) * (self.job_number + int(run_number) + 1) + int(run_number))
 
 
+    def get_total_trials(self, filename):
+        """
+        Return total trials from Sherpa LHE file.
+        """
+        import re
+
+        # Open the file
+        with open( filename, 'r') as file:
+            # Read the file line by line
+            for line in file:
+                # Search for the pattern
+                match = re.match(r'# Number of Trials\s+:\s+(\d+)', line)
+                # If a match is found
+                if match:
+                    # Extract the number from the match
+                    number_of_trials = int(match.group(1))
+                    # Break the loop since we found the number
+                    break
+
+        # Print the number of trials
+        return number_of_trials
+
+
     def run_job(self, run_number, events):
         """
         The main loop for the Sherpa+CKKWL run given the run index on the current node
@@ -169,6 +194,10 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/version=\"1\.0\"/version=\"2\.0\"/g' SherpaLHE_%s.lhe" % (str(seed))
         os.system(cmd)
 
+        # Get total number of trials from Sherpa LHE file
+        event_file_name = "SherpaLHE_%s.lhe" % (str(seed))
+        total_trials = self.get_total_trials(event_file_name)
+
         # Modify HEJ+Pythia parameter seeds
         cmd = "cp hej_merging.cmnd hej_merging_%s.cmnd" % (str(seed))
         os.system(cmd)
@@ -179,6 +208,10 @@ class SherpaCKKWLJob():
         cmd = "sed -i 's/Merging:HEJconfigPath.*=.*/Merging:HEJconfigPath = config_%s.yml/g' hej_merging_%s.cmnd" % (str(seed), str(seed))
         os.system(cmd)
         cmd = "sed -i 's/Merging:doHEJMerging.*=.*/Merging:doHEJMerging = off/g' hej_merging_%s.cmnd" % (str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/Merging:doComplementMerging.*=.*/Merging:doComplementMerging = on/g' hej_merging_%s.cmnd" % (str(seed))
+        os.system(cmd)
+        cmd = "sed -i 's/Merging:nTrialsFO.*=.*/Merging:nTrialsFO = *s/g' hej_merging_%s.cmnd" % (str(total_trials), str(seed))
         os.system(cmd)
 
         # Run HEJ+Pythia
@@ -356,9 +389,10 @@ def parse():
         base_dir : base directory containing run configuration files
         rivet_dir : directory containing rivet analyses
         grid_output_dir : directory on grid storage for output, with protocol
+        grid_base_dir : directory on grid storage for HEP tools storage, with protocol
         name : job name
     """
-    parser = argparse.ArgumentParser(description = "Usage: python run_hejpythia.py -u user_name -j job_number -p runs_per_job -e events -b base_dir -r rivet_dir -o grid_output_dir")
+    parser = argparse.ArgumentParser(description = "Usage: python run_sherpackkwl.py -u user_name -j job_number -p runs_per_job -e events -b base_dir -r rivet_dir -o grid_output_dir -g grid_base_dir")
     parser.add_argument('--user_name', '-u', nargs = 1, type = str)
     parser.add_argument('--job_number', '-j', nargs = 1, type = int, default = 1)
     parser.add_argument('--processes', '-p', nargs = 1, type = int, default = 1)
@@ -366,6 +400,7 @@ def parse():
     parser.add_argument('--base_dir', '-b', nargs = 1, type = str, default = os.getcwd())
     parser.add_argument('--rivet_dir', '-r', nargs = 1, type = str, default = os.getcwd())
     parser.add_argument('--output', '-o', nargs = 1, type = str)
+    parser.add_argument('--grid_base_dir', '-g', nargs = 1, type = str)
     return parser.parse_args()
 
 
@@ -376,8 +411,8 @@ def main():
     args = parse()
 
     t0 = time.time()
-    hejpythia = SherpaCKKWLJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0])
-    hejpythia.set_env()
+    sherpackkwl = SherpaCKKWLJob(args.user_name[0], args.job_number[0], args.base_dir[0], args.rivet_dir[0], args.output[0], args.grid_base_dir[0])
+    sherpackkwl.set_env()
 
     if args.processes[0] > 4:
         raise(ValueError("Maximum number of processes is 4 per node."))
@@ -385,7 +420,7 @@ def main():
     t1 = time.time()
     jobs = []
     for number in range(args.processes[0]):
-        p = multiprocessing.Process(target = hejpythia.run_job, args = (number, args.events[0]))
+        p = multiprocessing.Process(target = sherpackkwl.run_job, args = (number, args.events[0]))
         jobs.append(p)
 
     for job in jobs:
