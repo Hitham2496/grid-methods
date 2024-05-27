@@ -113,6 +113,7 @@ class HejPythiaJob():
         os.system("date")
 
 
+    @classmethod
     def set_hej_env(cls):
         """
         Sets the HEJ environment
@@ -129,6 +130,7 @@ class HejPythiaJob():
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
  
 
+    @classmethod
     def set_hejv2_env(cls):
         """
         Sets the HEJV2 environment
