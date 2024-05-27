@@ -270,6 +270,7 @@ class HejPythiaMerger():
         """
         Copies grid output files to scratch dir.
         """
+        HejPythiaJob.set_hejv2_env()
         print("Copying output to scratch")
         cmd = "gfal-copy -f -r %s %s" % (self.grid_output_dir, self.scratch_dir)
         os.system(cmd)
@@ -278,6 +279,7 @@ class HejPythiaMerger():
         os.system("mkdir results/hej-output")
         os.system("mkdir results/hej-pythia-output")
 
+        HejPythiaJob.set_hej_env()
         print("Organising output into categories of runs")
         files = os.listdir(self.scratch_dir)
         print(files)
