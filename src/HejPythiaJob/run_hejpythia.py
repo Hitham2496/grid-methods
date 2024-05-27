@@ -42,6 +42,7 @@ class HejPythiaJob():
         HEJ, HEJ_Pythia and rivet analyses and setting $PATH and $LD_LIBRARY_PATH
         and $RIVET_ANALYSIS_PATH.
         """
+        self.set_hejv2_env()
         print("Setting environment for HEJ+Pythia run")
         os.system("date")
         cmd = "source /mt/home/%s/.bashrc" % (self.user_name)
@@ -85,7 +86,6 @@ class HejPythiaJob():
         os.system("rm HEJ.tar.gz")
  
         print("Setting environment for HEJ run")
-        self.set_hej_env()
         os.environ["LD_LIBRARY_PATH"] = "%s/HEJ/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["PATH"] = "%s/HEJ/bin:%s" % (str(os.getcwd()), str(os.environ.get("PATH",'')))
 
@@ -108,11 +108,12 @@ class HejPythiaJob():
         os.environ["LD_LIBRARY_PATH"] = "%s/Pythia/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "%s/HEJ_pythia/lib:%s" % (str(os.getcwd()), str(os.environ.get("LD_LIBRARY_PATH",'')))
 
+        self.set_hej_env()
         print("Environment set at:")
         os.system("date")
 
 
-    def set_hej_env(self):
+    def set_hej_env(cls):
         """
         Sets the HEJ environment
         """
@@ -128,7 +129,7 @@ class HejPythiaJob():
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJ/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
  
 
-    def set_hejv2_env(self):
+    def set_hejv2_env(cls):
         """
         Sets the HEJV2 environment
         """
@@ -141,7 +142,6 @@ class HejPythiaJob():
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/QCDloop/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/rivet/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/yaml-cpp/lib/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
-        os.environ["LD_LIBRARY_PATH"] = "/cvmfs/pheno.egi.eu/HEJV2/HepMC3/lib64/:%s" % (str(os.environ.get("LD_LIBRARY_PATH",'')))
         
 
     def get_unique_seed(self, run_number):
@@ -206,6 +206,7 @@ class HejPythiaJob():
         os.system("date")
 
         self.print_info()
+        self.set_hejv2_env()
         self.save_results(seed)
 
 
