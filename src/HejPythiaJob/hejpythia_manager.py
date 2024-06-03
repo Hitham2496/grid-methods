@@ -116,7 +116,6 @@ def main(args):
     merger = HejPythiaMerger(args["user_name"], args["output_dir"])
     if manager_args.finalise:
         merger.copy_files()
-        os.system("arcclean -j multijobs.dat")
         return
 
     if manager_args.merge:
